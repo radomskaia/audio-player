@@ -1,0 +1,19 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  //10px
+  font-size: 62.5%;
+  scroll-behavior: smooth;
+}
+
+a:link,
+a:visited {
+  text-decoration: none;
+  color: inherit;
+}

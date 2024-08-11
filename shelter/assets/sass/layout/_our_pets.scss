@@ -1,0 +1,80 @@
+.pets-box {
+  @extend %flex-col;
+  @extend %flex-center;
+  gap: 5.99rem;
+}
+
+.card-box {
+  gap: 5.3rem;
+}
+
+.cards-list {
+  @extend %flex;
+  gap: 9rem;
+}
+
+.card-item {
+  @extend %flex-col;
+  align-items: center;
+  gap: 3rem;
+}
+
+.pets-header {
+  display: inline-block;
+  transform: translateX(1px) translateY(-0.09px);
+}
+
+@include respond(tab-land) {
+  .cards-list {
+    gap: 4rem;
+  }
+
+  .card-box {
+    gap: 1.2rem;
+  }
+}
+
+@include respond(tab-port) {
+  .card-item.page1:last-child {
+    display: none;
+  }
+}
+
+@include respond(big-phone) {
+  .card-box {
+    row-gap: 6rem;
+  }
+
+  .cards-list {
+    justify-content: center;
+  }
+
+  .card-box .btn_circle {
+    order: 2;
+  }
+
+  .card-box .btn_circle:first-child {
+    margin-right: 10rem;
+  }
+}
+
+@include respond(phone) {
+  .card-item.page1:nth-child(2) {
+    display: none;
+  }
+
+
+  .card-box {
+    width: 27rem;
+    gap: 7.8rem;
+    row-gap: 2rem;
+  }
+
+  .pets-box {
+    gap: 4.1rem;
+  }
+
+  .card-box .btn_circle:first-child {
+    margin-right: 0;
+  }
+}

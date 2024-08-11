@@ -1,0 +1,70 @@
+@import "../abstracts/mixins";
+
+
+.header-box {
+  @extend %flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.nav {
+  @extend %flex;
+  gap: 3.6rem;
+}
+
+
+.mobile-nav-box {
+  display: none;
+}
+
+.mobile-nav {
+  display: none;
+}
+
+@include respond(big-phone) {
+  .nav {
+    display: none;
+  }
+
+  .mobile-nav-box {
+    //display: inline-block;
+    width: 100%;
+    position: fixed;
+    height: 100vh;
+    top: 0;
+    right: 0;
+    backdrop-filter: blur(2px);
+    display: none;
+
+    .mobile-nav {
+      position: fixed;
+      top: 0;
+      right: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 3.6rem;
+      height: 100vh;
+      width: 32rem;
+      justify-content: center;
+      align-items: center;
+      background-color: $color-dark-3xl;
+
+      .nav_link,
+      .nav_link:link,
+      .nav_link:visited {
+        font-family: Arial, sans-serif;
+        font-size: 3.2rem;
+        line-height: 1.6;
+        color: $color-light-s;
+        z-index: 888;
+      }
+    }
+  }
+}
+
+@include respond(phone) {
+  .header-box {
+    padding: 0 2rem;
+  }
+}

@@ -1,0 +1,131 @@
+.footer {
+  //min-height: 35rem;
+  background-image: url("../img/bg_noise_transparent@2x.png"), linear-gradient(135deg, $start-footer-gradient-bg, $end-footer-gradient-bg, #211F20 70% 100%);
+  color: $color-primary;
+}
+
+.footer-list {
+  @extend %flex;
+  flex-wrap: nowrap;
+  gap: 14rem;
+  list-style: none;
+  padding-top: 4rem;
+}
+
+.footer-item {
+  @extend %flex-col;
+  width: 30rem;
+
+}
+
+.footer-item:nth-child(1) {
+  gap: 3.7555rem;
+}
+
+.footer-item:nth-child(2) {
+  gap: 3.2rem;
+}
+
+.footer-item:not(:last-child) {
+  padding-top: 1.6rem;
+}
+
+.footer-item:last-child {
+  margin-left: auto;
+}
+
+.footer-icon {
+  height: 3.2rem;
+  width: auto;
+}
+
+.footer-contacts {
+  @extend %flex;
+  align-items: center;
+  gap: 2rem;
+  transition: all 0.2s;
+  flex-wrap: nowrap;
+}
+
+.footer-contacts:hover {
+  filter: brightness(120%);
+}
+
+@include respond(tab-land) {
+  .footer-list {
+    flex-wrap: wrap;
+    padding-top: 1.7rem;
+    gap: 4rem;
+    justify-content: center;
+    row-gap: 6.3rem;
+  }
+
+  .footer-item:nth-child(1) {
+    gap: 3.65rem;
+  }
+
+  .footer-item:nth-child(2) {
+    gap: 3.11rem;
+  }
+
+  .footer-item:last-child {
+
+    margin: 0 auto;
+  }
+
+  .footer2 .footer-item:nth-child(1) {
+    gap: 3.8rem;
+  }
+}
+
+@include respond(phone) {
+ .footer {
+  background-image: url("../img/bg_noise_transparent@2x.png"), linear-gradient(to right, $start-footer-gradient-bg, $end-footer-gradient-bg);
+}
+
+  .footer-list {
+    gap: 2.4rem;
+  }
+
+  .footer-item {
+    & .header_3 {
+      width: 27rem;
+      align-self: center;
+    }
+
+    &:first-child {
+      align-items: center;
+      gap: 3.9rem;
+    }
+
+    &:nth-child(2) {
+      gap: 3.9rem;
+    }
+
+    &:not(:last-child) {
+      padding-top: 1.2rem;
+    }
+
+    &:last-child {
+      padding-top: 1.4rem;
+      //transform: translateX(20px);
+      //display: flex;
+      //justify-content: center;
+
+      img {
+        margin: 0 auto;
+        max-height: 100%;
+        width: 86.67%;
+        height: auto;
+      }
+    }
+  }
+
+   .footer2 .footer-item:nth-child(1) {
+    gap: 4.1rem;
+  }
+
+  .footer2 .footer-list {
+    gap: 2.7rem;
+  }
+}

@@ -1,0 +1,82 @@
+.donation {
+  gap: 3.1rem;
+}
+
+.donation_img {
+  margin: 1.1rem 0;
+}
+
+.donation_text-box {
+  @extend %flex-col;
+  width: 38rem;
+  gap: 2rem;
+}
+
+.credit-card:link,
+.credit-card:visited {
+  @extend %flex;
+  align-items: center;
+  gap: 1.5rem;
+  border-radius: 0.9rem;
+  background-color: $color-primary;
+  padding: 1rem 1.5rem;
+  transition: all 0.2s;
+}
+
+.credit-card:hover,
+.credit-card:active {
+  filter: brightness(90%);
+}
+
+@include respond(tab-port) {
+  .donation_text-box {
+    order: -1;
+  }
+
+  .donation {
+    gap: 4.8rem;
+  }
+}
+
+@include respond(tab-port) {
+  .donation_img {
+    max-width: 50.5rem;
+    width: 81.25%;
+    height: auto;
+  }
+}
+
+@include respond(phone) {
+  .donation_text-box {
+    align-items: center;
+
+    & .header_4 {
+      font-size: 1.5rem;
+      line-height: 1.1;
+      letter-spacing: 0.09rem;
+    }
+
+    & .header_5 {
+      font-size: 1.4rem;
+      line-height: 1.6;
+      letter-spacing: 0.05rem;
+    }
+
+    & .align-self__start {
+      align-self: center;
+    }
+
+    & .paragraph-s {
+      text-align: justify;
+      padding: 0 10px;
+    }
+  }
+
+  .donation {
+    gap: 3.2rem;
+
+    &_img {
+      width: 86.67%;
+    }
+  }
+}

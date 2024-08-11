@@ -1,0 +1,18 @@
+%flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+%flex {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+%flex-center {
+  align-items: center;
+  justify-content: center;
+}
+
+%text-align {
+  text-align: center;
+}

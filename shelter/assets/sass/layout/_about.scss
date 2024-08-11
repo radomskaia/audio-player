@@ -1,0 +1,52 @@
+.about-box {
+  @extend %flex;
+  @extend %flex-center;
+  gap: 12rem;
+}
+
+.about-text {
+  max-width: 43rem;
+  min-height: 38rem;
+  @extend %flex-col;
+  justify-content: space-between;
+}
+
+.about-header {
+  width: 37rem;
+  transform: translateY(0.1rem) translateX(-0.01rem);
+}
+
+.about-img {
+  max-width: 30rem;
+  width: 86.67%;
+  height: auto;
+}
+
+@include respond(tab-land) {
+  .about-box {
+    gap: 8rem;
+  }
+
+  .about-text {
+    order: -1;
+  }
+}
+
+@include respond(phone) {
+.about-box {
+  gap: 4rem;
+}
+
+  .about-header {
+    max-width: 29rem;
+    transform: translateY(0) translateX(-0.9rem);
+  }
+
+  .about-text {
+    gap: 2.4rem;
+    //width: 27rem;
+    min-width: 27rem;
+    padding: 0 1.5rem;
+    text-align: justify;
+  }
+}

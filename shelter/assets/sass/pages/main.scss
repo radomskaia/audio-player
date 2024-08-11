@@ -1,0 +1,95 @@
+@import "../abstracts/mixins";
+@import "../abstracts/placeholders";
+@import "../abstracts/variables";
+
+@import "../base/base";
+@import "../base/typography";
+@import "../base/utilities";
+
+@import "../components/button";
+@import "../components/card";
+@import "../components/logo";
+
+@import "../layout/header";
+@import "../layout/start";
+@import "../layout/about";
+@import "../layout/our_pets";
+@import "../layout/help";
+@import "../layout/donation";
+@import "../layout/footer";
+
+
+
+.header-section {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 11.95rem;
+  z-index: 999;
+}
+
+.start-section {
+  position: relative;
+  //background-image: url("../img/bg_noise_transparent@2x.png"), linear-gradient(135deg, $start-screen-gradient-bg, $end-screen-gradient-bg 55%);
+  background: url("../img/bg_noise_transparent@2x.png"), radial-gradient(100% 215.42% at 0% 0%, #5B483A 0%, #262425 70%);
+
+  @extend %flex;
+  align-items: end;
+}
+
+.start-section .container {
+  padding-top: 6rem;
+}
+
+.about-section,
+.our_pets-section,
+.help-section,
+.donation-section {
+  padding: 8rem 0 10rem 0;
+}
+
+.our_pets-section {
+  background-color: $color-light-l;
+}
+
+.donation-section {
+  background-color: $color-light-l;
+}
+
+
+@include respond(tab-port) {
+  .donation-section {
+    padding: 8rem 0 8.8rem 0;
+  }
+
+  .start-section {
+    background-image: url("../img/bg_noise_transparent@2x.png"), linear-gradient(135deg, $start-screen-gradient-bg);
+  }
+
+  .start-section .container {
+    padding-top: 3rem;
+    padding-bottom: 0;
+    gap: 10rem;
+  }
+}
+
+@include respond(phone) {
+  .start-section .container {
+    gap: 10.5rem;
+  }
+
+  .our_pets-section,
+  .help-section,
+  .donation-section {
+    padding: 4.2rem 0;
+  }
+
+  .about-section {
+    padding: 4.2rem 0;
+  }
+
+  .donation-section {
+    padding: 4rem 0 3.1rem 0;
+  }
+}
