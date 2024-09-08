@@ -1,3 +1,31 @@
+.buttonBox, .container {
+  display: flex;
+}
+
+.nameBox, .songBar, .playerBox {
+  display: flex;
+  flex-direction: column;
+}
+
+.buttonBox, .nameBox, .container {
+  align-items: center;
+  justify-content: center;
+}
+
+.buttonBox, .container {
+  display: flex;
+}
+
+.nameBox, .songBar, .playerBox {
+  display: flex;
+  flex-direction: column;
+}
+
+.buttonBox, .nameBox, .container {
+  align-items: center;
+  justify-content: center;
+}
+
 *,
 *::before,
 *::after {
@@ -15,11 +43,125 @@ body {
   box-sizing: border-box;
 }
 
+.buttonBox, .container {
+  display: flex;
+}
+
+.nameBox, .songBar, .playerBox {
+  display: flex;
+  flex-direction: column;
+}
+
+.buttonBox, .nameBox, .container {
+  align-items: center;
+  justify-content: center;
+}
+
 body {
-  font-family: "Nerko One", sans-serif;
   font-weight: 400;
   font-size: 1.6rem;
-  line-height: 1.6;
+}
+
+.artistName {
+  color: #F8EDE3;
+  font-family: "Protest Guerrilla", sans-serif;
+  letter-spacing: 3px;
+  text-shadow: 0 0 5px #16423C;
+}
+
+.songName {
+  font-family: Montserrat, sans-serif;
+  color: #C4DAD2;
+}
+
+.buttonBox, .container {
+  display: flex;
+}
+
+.nameBox, .songBar, .playerBox {
+  display: flex;
+  flex-direction: column;
+}
+
+.buttonBox, .nameBox, .container {
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  width: 100%;
+  height: 100vh;
+  background-image: linear-gradient(to bottom right, rgba(22, 66, 60, 0.8), rgba(22, 66, 60, 0.8)), url("../image/covers/01 The Emptiness Machine.jpeg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.buttonBox, .container {
+  display: flex;
+}
+
+.nameBox, .songBar, .playerBox {
+  display: flex;
+  flex-direction: column;
+}
+
+.buttonBox, .nameBox, .container {
+  align-items: center;
+  justify-content: center;
+}
+
+.playerBox {
+  width: 50rem;
+  height: 70rem;
+  border-radius: 2rem;
+  box-shadow: 0 0 4rem #000;
+  overflow: hidden;
+  border: 2px solid #16423C;
+}
+
+.coverBox {
+  width: 100%;
+  height: auto;
+  border-bottom: 2px solid #16423C;
+}
+
+.coverImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.songBox {
+  width: 100%;
+  height: 20rem;
+  background-image: linear-gradient(to bottom right, #16423C, #6A9C89);
+}
+
+.songBar {
+  width: 100%;
+  padding: 1rem;
+  gap: 2rem;
+}
+
+.playBtn,
+.rewindBtn {
+  background-color: transparent;
+  border-radius: 50%;
+}
+
+.buttonBox {
+  gap: 1rem;
+}
+
+.playBtn {
+  width: 6rem;
+  height: 6rem;
+}
+
+.rewindBtn {
+  width: 4rem;
+  height: 4rem;
 }
 
 /*# sourceMappingURL=main.css.map */

@@ -3,8 +3,18 @@
 @import "../abstracts/variables";
 
 body {
-  font-family: 'Nerko One', sans-serif;
   font-weight: 400;
   font-size: 1.6rem;
-  line-height: 1.6;
+}
+
+.artistName {
+  color: #F8EDE3;
+  font-family: 'Protest Guerrilla', sans-serif;
+  letter-spacing: 3px;
+  text-shadow: 0 0 5px $color-primary-dark;
+}
+
+.songName {
+    font-family: Montserrat, sans-serif;
+  color: $color-primary-light;
 }
