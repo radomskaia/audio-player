@@ -32,30 +32,6 @@ function createDOMElement(tagName, parentElement, ...classList) {
     return newEl
 }
 
-const body = document.body;
-const container = createDOMElement('div', body, 'container');
-const playerBox = createDOMElement('div', container, 'playerBox');
-const coverBox = createDOMElement('div', playerBox, 'coverBox');
-const coverImg = createDOMElement('img', coverBox, 'coverImg');
-coverImg.src = 'assets/image/covers/01 The Emptiness Machine.jpeg';
-coverImg.alt = 'cover';
-const songBox = createDOMElement('div', playerBox, 'songBox');
-const songBar = createDOMElement('div', songBox, 'songBar');
-const nameBox = createDOMElement('div', songBar, 'nameBox');
-const artistName = createDOMElement('h1', nameBox, 'artistName');
-artistName.textContent = 'Linkin Park';
-const songName = createDOMElement('h2', nameBox, 'songName');
-songName.textContent = 'The Emptiness Machine';
-const buttonBox = createDOMElement('div', songBar, 'buttonBox');
-const rewindBtn = createDOMElement('img', buttonBox, 'rewindBtn');
-rewindBtn.alt = 'play/rewind button';
-rewindBtn.src = 'assets/image/icons/icons8-rewind-64.png';
-const playBtn = createDOMElement('img', buttonBox, 'playBtn');
-playBtn.alt = 'play/pause button';
-playBtn.src = 'assets/image/icons/icons8-play-64.png';
-const forwardBtn = createDOMElement('img', buttonBox, 'rewindBtn');
-forwardBtn.alt = 'play/rewind button';
-forwardBtn.src = 'assets/image/icons/icons8-fast-forward-64.png';
 
 function init() {
     const body = document.body;
@@ -69,6 +45,10 @@ function init() {
     const nameBox = createDOMElement('div', songBox, 'nameBox');
     artistName = createDOMElement('h1', nameBox, 'artistName');
     songName = createDOMElement('h2', nameBox, 'songName');
+    const progressBox = createDOMElement('div', songBox, 'progressBox');
+    songDuration = createDOMElement('p', progressBox, 'songDuration');
+    progressBar = createDOMElement('div', progressBox, 'progressBar');
+    progressCurrentTime = createDOMElement('p', progressBox, 'currentTime');
     const buttonBox = createDOMElement('div', songBox, 'buttonBox');
     rewindBtn = createDOMElement('img', buttonBox, 'rewindBtn', 'btn');
     playBtn = createDOMElement('img', buttonBox, 'playBtn', 'btn');
@@ -83,6 +63,7 @@ function init() {
     artistName.textContent = album[songNumber].artist;
     songName.textContent = album[songNumber].songName;
 
+    showTime(true)
     rewindBtn.alt = 'play/rewind button';
     rewindBtn.src = 'assets/image/icons/icons8-rewind-64.png';
     playBtn.alt = 'play/pause button';
@@ -126,7 +107,24 @@ function keyRewind(e) {
     }
 }
 
+function showTime(isCurrent) {
+    const time = isCurrent ? audio.currentTime : audio.duration;
+    const timeMin = Math.floor(time / SECONDS_IN_MINUTES);
+    const timeSec = Math.floor(time % SECONDS_IN_MINUTES);
+    const timeString = `${timeMin.toString().padStart(2, '0')}:${timeSec.toString().padStart(2, '0')}`
+    if (isCurrent) progressCurrentTime.textContent = timeString;
+    else songDuration.textContent = timeString;
+    const passedTime = audio.currentTime / audio.duration * 100;
+    progressBar.style.setProperty('--progress-width', `${passedTime}%`);
+    // console.log(progressBar.style.getPropertyValue('--buffered-width'));
+    if (progressBar.style.getPropertyValue('--buffered-width') !== '100%') bufferedTime()
+}
 
+function bufferedTime() {
+      // console.log(progressBar.style.getPropertyValue('--buffered-width'));
+    let bufferedTime = audio.buffered.length > 0 ? audio.buffered.end(0) / audio.duration * 100 : 0;
+    progressBar.style.setProperty('--buffered-width', `${bufferedTime}%`);
+}
 
 init()
 
@@ -135,3 +133,11 @@ forwardBtn.addEventListener('click', nextSong);
 rewindBtn.addEventListener('click', prevSong);
 document.addEventListener('keydown', keyRewind);
 audio.addEventListener('ended', nextSong)
+audio.addEventListener('timeupdate', showTime);
+audio.addEventListener('canplay', () => showTime(false))
+audio.addEventListener('progress', bufferedTime);
+progressBar.addEventListener('click', (e) => {
+    const timeProc = progressBar.clientWidth / e.offsetX;
+    audio.currentTime = audio.duration / timeProc;
+});
+
