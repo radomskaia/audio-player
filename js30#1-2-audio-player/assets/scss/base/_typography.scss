@@ -10,7 +10,8 @@ body {
 }
 
 .artistName {
-  color: #F8EDE3;
+  //color: #F8EDE3;
+  color: $color-primary-light2;
   font-family: 'Protest Guerrilla', sans-serif;
   letter-spacing: 3px;
   text-shadow: 0 0 5px $color-primary-dark;
@@ -19,4 +20,11 @@ body {
 .songName {
   font-family: Montserrat, sans-serif;
 
+}
+
+.popOver {
+  color: $color-primary-dark;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.4rem;
+  transition: all .2s;
 }

@@ -86,11 +86,45 @@
   height: 4rem;
 }
 
+.progressBarClickZone {
+  height: 3rem;
+  @extend %flex;
+  @extend %flex-center;
+}
+
+.progressBarClickZone:hover {
+cursor: pointer;
+}
+
 .progressBox {
   width: 70%;
   @extend %flex-col;
   margin: 0 auto;
-  gap: 0.5rem;
+  //gap: 0.5rem;
+  position: relative;
+}
+
+.progressPopOver {
+   @extend %flex;
+  justify-content: flex-start;
+  padding-left: 0.7rem ;
+  position: absolute;
+  top: -30%;
+  transform: translateX(-50%);
+  background-color: $color-primary-light;
+  width: 4rem;
+  height: 2.5rem;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 75%, 60% 75%, 50% 100%, 40% 75%, 0% 75%);
+  //transition: opacity .2s;
+  opacity: 0;
+  //pointer-events: none;
+  visibility: hidden;
+}
+
+.progressPopOver_active {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
 }
 
 .progressBar {
@@ -134,7 +168,13 @@ cursor: pointer;
   //width: 50%;
 }
 
+.timeBox {
+  @extend %flex;
+  justify-content: space-between;
+}
+
 .songDuration {
   align-self: flex-end;
 }
+
 

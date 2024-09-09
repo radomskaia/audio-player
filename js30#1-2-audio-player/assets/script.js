@@ -21,7 +21,7 @@ const album = [
 ]
 
 let playerStatus, songNumber, audio, rewindBtn, playBtn, forwardBtn, coverImg, artistName, songName, nextSong, prevSong,
-    progressCurrentTime, songDuration, progressBar;
+    progressCurrentTime, songDuration, progressBar, progressPopOver, textPopOver, rewindedTime, progressBarClickZone;
 
 function createDOMElement(tagName, parentElement, ...classList) {
     const newEl = document.createElement(tagName);
@@ -46,9 +46,13 @@ function init() {
     artistName = createDOMElement('h1', nameBox, 'artistName');
     songName = createDOMElement('h2', nameBox, 'songName');
     const progressBox = createDOMElement('div', songBox, 'progressBox');
-    songDuration = createDOMElement('p', progressBox, 'songDuration');
-    progressBar = createDOMElement('div', progressBox, 'progressBar');
-    progressCurrentTime = createDOMElement('p', progressBox, 'currentTime');
+    progressBarClickZone = createDOMElement('div', progressBox, 'progressBarClickZone');
+    progressPopOver = createDOMElement('div', progressBarClickZone, 'progressPopOver');
+    textPopOver = createDOMElement('p', progressPopOver, 'popOver');
+    progressBar = createDOMElement('div', progressBarClickZone, 'progressBar');
+    const timeBox = createDOMElement('div', progressBox, 'timeBox');
+    progressCurrentTime = createDOMElement('p', timeBox, 'currentTime');
+    songDuration = createDOMElement('p', timeBox, 'songDuration');
     const buttonBox = createDOMElement('div', songBox, 'buttonBox');
     rewindBtn = createDOMElement('img', buttonBox, 'rewindBtn', 'btn');
     playBtn = createDOMElement('img', buttonBox, 'playBtn', 'btn');
@@ -107,25 +111,41 @@ function keyRewind(e) {
     }
 }
 
-function showTime(isCurrent) {
-    const time = isCurrent ? audio.currentTime : audio.duration;
+function getTimeString(time) {
     const timeMin = Math.floor(time / SECONDS_IN_MINUTES);
     const timeSec = Math.floor(time % SECONDS_IN_MINUTES);
-    const timeString = `${timeMin.toString().padStart(2, '0')}:${timeSec.toString().padStart(2, '0')}`
-    if (isCurrent) progressCurrentTime.textContent = timeString;
-    else songDuration.textContent = timeString;
+    return `${timeMin > 0 ? timeMin : 0}:${timeSec > '0' ? timeSec.toString().padStart(2, '0') : '00'}`
+}
+
+function showTime(isCurrent) {
+    const time = isCurrent ? audio.currentTime : audio.duration;
+    if (isCurrent) progressCurrentTime.textContent = getTimeString(time);
+    else songDuration.textContent = getTimeString(time);
     const passedTime = audio.currentTime / audio.duration * 100;
-    progressBar.style.setProperty('--progress-width', `${passedTime}%`);
-    // console.log(progressBar.style.getPropertyValue('--buffered-width'));
+    if (!isMouseMove) progressBar.style.setProperty('--progress-width', `${passedTime}%`);
     if (progressBar.style.getPropertyValue('--buffered-width') !== '100%') bufferedTime()
 }
 
 function bufferedTime() {
-      // console.log(progressBar.style.getPropertyValue('--buffered-width'));
+    // console.log(progressBar.style.getPropertyValue('--buffered-width'));
     let bufferedTime = audio.buffered.length > 0 ? audio.buffered.end(0) / audio.duration * 100 : 0;
     progressBar.style.setProperty('--buffered-width', `${bufferedTime}%`);
 }
 
+function rewindSong(e) {
+    const offsetX = e.clientX - progressBar.getBoundingClientRect().left;
+    // console.log(offsetX, 'offsetX')
+    // console.log(e.offsetX, 'EL')
+    const timeProc = progressBar.clientWidth / offsetX;
+    rewindedTime = audio.duration / timeProc;
+    progressPopOver.classList.add('progressPopOver_active');
+    textPopOver.textContent = getTimeString(rewindedTime);
+    progressBar.style.setProperty('--progress-width', `${rewindedTime / audio.duration * 100}%`)
+
+    progressPopOver.style.left = `${offsetX}px`
+}
+
+let isMouseMove
 init()
 
 playBtn.addEventListener('click', playPauseMusic)
@@ -136,8 +156,29 @@ audio.addEventListener('ended', nextSong)
 audio.addEventListener('timeupdate', showTime);
 audio.addEventListener('canplay', () => showTime(false))
 audio.addEventListener('progress', bufferedTime);
-progressBar.addEventListener('click', (e) => {
-    const timeProc = progressBar.clientWidth / e.offsetX;
-    audio.currentTime = audio.duration / timeProc;
+progressBarClickZone.addEventListener('mousedown', () => isMouseMove = true);
+
+progressBarClickZone.addEventListener('mouseup', (e) => {
+    isMouseMove = false;
+    rewindSong(e);
+    progressPopOver.classList.remove('progressPopOver_active');
+    audio.currentTime = rewindedTime;
+    // console.log('mouseup');
 });
 
+progressBarClickZone.addEventListener('mouseleave', (e) => {
+    // console.log(isMouseMove)
+    if (!isMouseMove) return;
+
+    audio.currentTime = rewindedTime;
+    progressPopOver.classList.remove('progressPopOver_active');
+     // console.log('mouseout');
+     isMouseMove = false
+     // console.log(e.target);
+})
+
+progressBarClickZone.addEventListener('mousemove', (e) => {
+    if (!isMouseMove) return;
+    // console.log('mousemove', e);
+    rewindSong(e)
+})

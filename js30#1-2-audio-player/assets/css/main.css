@@ -1,4 +1,4 @@
-.buttonBox, .container {
+.timeBox, .progressPopOver, .progressBarClickZone, .buttonBox, .container {
   display: flex;
 }
 
@@ -7,12 +7,12 @@
   flex-direction: column;
 }
 
-.buttonBox, .nameBox, .container {
+.progressBarClickZone, .buttonBox, .nameBox, .container {
   align-items: center;
   justify-content: center;
 }
 
-.buttonBox, .container {
+.timeBox, .progressPopOver, .progressBarClickZone, .buttonBox, .container {
   display: flex;
 }
 
@@ -21,7 +21,7 @@
   flex-direction: column;
 }
 
-.buttonBox, .nameBox, .container {
+.progressBarClickZone, .buttonBox, .nameBox, .container {
   align-items: center;
   justify-content: center;
 }
@@ -43,7 +43,7 @@ body {
   box-sizing: border-box;
 }
 
-.buttonBox, .container {
+.timeBox, .progressPopOver, .progressBarClickZone, .buttonBox, .container {
   display: flex;
 }
 
@@ -52,7 +52,7 @@ body {
   flex-direction: column;
 }
 
-.buttonBox, .nameBox, .container {
+.progressBarClickZone, .buttonBox, .nameBox, .container {
   align-items: center;
   justify-content: center;
 }
@@ -65,7 +65,7 @@ body {
 }
 
 .artistName {
-  color: #F8EDE3;
+  color: #E9EFEC;
   font-family: "Protest Guerrilla", sans-serif;
   letter-spacing: 3px;
   text-shadow: 0 0 5px #16423C;
@@ -75,7 +75,14 @@ body {
   font-family: Montserrat, sans-serif;
 }
 
-.buttonBox, .container {
+.popOver {
+  color: #16423C;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.4rem;
+  transition: all 0.2s;
+}
+
+.timeBox, .progressPopOver, .progressBarClickZone, .buttonBox, .container {
   display: flex;
 }
 
@@ -84,7 +91,7 @@ body {
   flex-direction: column;
 }
 
-.buttonBox, .nameBox, .container {
+.progressBarClickZone, .buttonBox, .nameBox, .container {
   align-items: center;
   justify-content: center;
 }
@@ -98,7 +105,7 @@ body {
   background-size: cover;
 }
 
-.buttonBox, .container {
+.timeBox, .progressPopOver, .progressBarClickZone, .buttonBox, .container {
   display: flex;
 }
 
@@ -107,7 +114,7 @@ body {
   flex-direction: column;
 }
 
-.buttonBox, .nameBox, .container {
+.progressBarClickZone, .buttonBox, .nameBox, .container {
   align-items: center;
   justify-content: center;
 }
@@ -172,10 +179,38 @@ body {
   height: 4rem;
 }
 
+.progressBarClickZone {
+  height: 3rem;
+}
+
+.progressBarClickZone:hover {
+  cursor: pointer;
+}
+
 .progressBox {
   width: 70%;
   margin: 0 auto;
-  gap: 0.5rem;
+  position: relative;
+}
+
+.progressPopOver {
+  justify-content: flex-start;
+  padding-left: 0.7rem;
+  position: absolute;
+  top: -30%;
+  transform: translateX(-50%);
+  background-color: #C4DAD2;
+  width: 4rem;
+  height: 2.5rem;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 75%, 60% 75%, 50% 100%, 40% 75%, 0% 75%);
+  opacity: 0;
+  visibility: hidden;
+}
+
+.progressPopOver_active {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
 }
 
 .progressBar {
@@ -214,6 +249,10 @@ body {
   transform: translateY(-50%);
   left: 0;
   width: var(--buffered-width);
+}
+
+.timeBox {
+  justify-content: space-between;
 }
 
 .songDuration {
