@@ -2,7 +2,7 @@
   display: flex;
 }
 
-.nameBox, .songBar, .playerBox {
+.progressBox, .nameBox, .songBox, .playerBox {
   display: flex;
   flex-direction: column;
 }
@@ -16,7 +16,7 @@
   display: flex;
 }
 
-.nameBox, .songBar, .playerBox {
+.progressBox, .nameBox, .songBox, .playerBox {
   display: flex;
   flex-direction: column;
 }
@@ -47,7 +47,7 @@ body {
   display: flex;
 }
 
-.nameBox, .songBar, .playerBox {
+.progressBox, .nameBox, .songBox, .playerBox {
   display: flex;
   flex-direction: column;
 }
@@ -60,6 +60,8 @@ body {
 body {
   font-weight: 400;
   font-size: 1.6rem;
+  color: #C4DAD2;
+  font-family: "Protest Guerrilla", sans-serif;
 }
 
 .artistName {
@@ -71,14 +73,13 @@ body {
 
 .songName {
   font-family: Montserrat, sans-serif;
-  color: #C4DAD2;
 }
 
 .buttonBox, .container {
   display: flex;
 }
 
-.nameBox, .songBar, .playerBox {
+.progressBox, .nameBox, .songBox, .playerBox {
   display: flex;
   flex-direction: column;
 }
@@ -101,7 +102,7 @@ body {
   display: flex;
 }
 
-.nameBox, .songBar, .playerBox {
+.progressBox, .nameBox, .songBox, .playerBox {
   display: flex;
   flex-direction: column;
 }
@@ -112,7 +113,7 @@ body {
 }
 
 .playerBox {
-  width: 50rem;
+  width: 40rem;
   height: 70rem;
   border-radius: 2rem;
   box-shadow: 0 0 4rem #000;
@@ -122,7 +123,6 @@ body {
 
 .coverBox {
   width: 100%;
-  height: auto;
   border-bottom: 2px solid #16423C;
 }
 
@@ -130,24 +130,32 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: all 0.2s;
 }
 
 .songBox {
   width: 100%;
-  height: 20rem;
+  height: 30rem;
   background-image: linear-gradient(to bottom right, #16423C, #6A9C89);
-}
-
-.songBar {
-  width: 100%;
   padding: 1rem;
   gap: 2rem;
 }
 
-.playBtn,
-.rewindBtn {
-  background-color: transparent;
+.btn {
   border-radius: 50%;
+  transition: all, 0.2s ease;
+}
+
+.btn:hover {
+  cursor: pointer;
+  backdrop-filter: brightness(50%);
+  transform: translateY(-2px);
+}
+
+.btn:active {
+  cursor: pointer;
+  backdrop-filter: brightness(120%);
+  transform: translateY(0);
 }
 
 .buttonBox {
@@ -162,6 +170,54 @@ body {
 .rewindBtn {
   width: 4rem;
   height: 4rem;
+}
+
+.progressBox {
+  width: 70%;
+  margin: 0 auto;
+  gap: 0.5rem;
+}
+
+.progressBar {
+  width: 100%;
+  height: 6px;
+  background-color: #6A9C89;
+  border-radius: 10rem;
+  position: relative;
+  border: 1px solid #16423C;
+  transition: all 0.2s;
+}
+
+.progressBar:hover {
+  cursor: pointer;
+}
+
+.progressBar::after {
+  content: "";
+  height: 6px;
+  background-color: #16423C;
+  border-radius: 10rem;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 0;
+  width: var(--progress-width);
+}
+
+.progressBar::before {
+  content: "";
+  height: 4px;
+  background-color: #C4DAD2;
+  border-radius: 10rem;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 0;
+  width: var(--buffered-width);
+}
+
+.songDuration {
+  align-self: flex-end;
 }
 
 /*# sourceMappingURL=main.css.map */
