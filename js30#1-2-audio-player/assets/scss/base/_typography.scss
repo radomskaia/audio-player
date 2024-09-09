@@ -5,6 +5,8 @@
 body {
   font-weight: 400;
   font-size: 1.6rem;
+   color: $color-primary-light;
+  font-family: 'Protest Guerrilla', sans-serif;
 }
 
 .artistName {
@@ -15,6 +17,6 @@ body {
 }
 
 .songName {
-    font-family: Montserrat, sans-serif;
-  color: $color-primary-light;
+  font-family: Montserrat, sans-serif;
+
 }
