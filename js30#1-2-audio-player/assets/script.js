@@ -36,17 +36,32 @@ function createDOMElement(tagName, parentElement, ...classList) {
 function init() {
     const body = document.body;
     const container = createDOMElement('div', body, 'container');
+    const container = createDOMElement('main', body, 'container');
+    const footer = createDOMElement('footer', body, 'footer');
+    const currYear = createDOMElement('p', footer, 'currYear');
+    currYear.textContent = `${new Date().getFullYear()}`;
+    const link1 = createDOMElement('a', footer, 'link');
+    link1.href = 'https://github.com/radomskaia';
+    link1.target = '_blank';
+    const github = createDOMElement('img', link1, 'icon');
+    github.alt = 'icon';
+    github.src = 'assets/image/icons/icons8-github-50.png';
+    const link2 = createDOMElement('a', footer, 'link');
+    link2.href = 'https://rs.school/courses/javascript-ru';
+    link2.target = '_blank';
+    const rsSchool = createDOMElement('img', link2, 'icon');
+    rsSchool.alt = 'icon';
+    rsSchool.src = 'assets/image/icons/logo-rsschool3.png';
     const playerBox = createDOMElement('div', container, 'playerBox');
     const coverBox = createDOMElement('div', playerBox, 'coverBox');
     coverImg = createDOMElement('img', coverBox, 'coverImg');
     coverImg.alt = 'cover';
     const songBox = createDOMElement('div', playerBox, 'songBox');
-    // const songBar = createDOMElement('div', playerBox, 'songBar');
     const nameBox = createDOMElement('div', songBox, 'nameBox');
     artistName = createDOMElement('h1', nameBox, 'artistName');
     songName = createDOMElement('h2', nameBox, 'songName');
     const progressBox = createDOMElement('div', songBox, 'progressBox');
-    progressBarClickZone = createDOMElement('div', progressBox, 'progressBarClickZone');
+    const progressBarClickZone = createDOMElement('div', progressBox, 'progressBarClickZone');
     progressPopOver = createDOMElement('div', progressBarClickZone, 'progressPopOver');
     textPopOver = createDOMElement('p', progressPopOver, 'popOver');
     progressBar = createDOMElement('div', progressBarClickZone, 'progressBar');
@@ -58,9 +73,10 @@ function init() {
     playBtn = createDOMElement('img', buttonBox, 'playBtn', 'btn');
     forwardBtn = createDOMElement('img', buttonBox, 'rewindBtn', 'btn');
 
+
     audio = new Audio();
     console.log(audio)
-    playerStatus = false;
+    isPlay = false;
     songNumber = 0
     audio.src = album[songNumber].audioSrc;
     coverImg.src = album[songNumber].coverSrc;
@@ -68,6 +84,7 @@ function init() {
     songName.textContent = album[songNumber].songName;
 
     showTime(true)
+
     rewindBtn.alt = 'play/rewind button';
     rewindBtn.src = 'assets/image/icons/icons8-rewind-64.png';
     playBtn.alt = 'play/pause button';
@@ -77,13 +94,46 @@ function init() {
 
     nextSong = changeSongNumber.bind('next');
     prevSong = changeSongNumber.bind('prev');
+
+    // Event Listeners
+    playBtn.addEventListener('click', playPauseMusic)
+    forwardBtn.addEventListener('click', nextSong);
+    rewindBtn.addEventListener('click', prevSong);
+    document.addEventListener('keydown', keyDownRewind);
+    document.addEventListener('keyup', keyUpRewind);
+    audio.addEventListener('ended', nextSong)
+    audio.addEventListener('timeupdate', showTime);
+    audio.addEventListener('canplay', () => showTime(false))
+    audio.addEventListener('progress', bufferedTime);
+    progressBarClickZone.addEventListener('mousedown', () => isMouseMove = true);
+
+    progressBarClickZone.addEventListener('mouseup', (e) => {
+        isMouseMove = false;
+        rewindSong(e);
+        progressPopOver.classList.remove('progressPopOver_active');
+        audio.currentTime = rewindTime;
+    });
+
+    progressBarClickZone.addEventListener('mouseleave', (e) => {
+        if (!isMouseMove) return;
+
+        audio.currentTime = rewindTime;
+        progressPopOver.classList.remove('progressPopOver_active');
+
+        isMouseMove = false
+    })
+
+    progressBarClickZone.addEventListener('mousemove', (e) => {
+        if (!isMouseMove) return;
+        rewindSong(e)
+    })
 }
 
 function playPauseMusic() {
-    if (playerStatus) audio.pause();
+    if (isPlay) audio.pause();
     else audio.play();
-    playerStatus = !playerStatus;
-    playBtn.src = playerStatus ? 'assets/image/icons/icons8-pause-64.png' : 'assets/image/icons/icons8-play-64.png';
+    isPlay = !isPlay;
+    playBtn.src = isPlay ? 'assets/image/icons/icons8-pause-64.png' : 'assets/image/icons/icons8-play-64.png';
 }
 
 function changeSongNumber() {
@@ -97,18 +147,95 @@ function changeSongNumber() {
     coverImg.src = album[songNumber].coverSrc;
     artistName.textContent = album[songNumber].artist;
     songName.textContent = album[songNumber].songName;
-    playerStatus = false;
+    isPlay = false;
     playPauseMusic()
 }
 
-function keyRewind(e) {
+function keyDownRewind(e) {
+    // console.log('до', arrowPressed);
+    if ((e.key !== 'ArrowLeft' && e.key !== 'ArrowRight')
+        || (e.key !== arrowPressed && arrowPressed !== undefined)) {
+        if (isPressed) {
+            stopKeyRewind(true)
+            document.removeEventListener('keydown', keyDownRewind);
+            console.log('keydown removed', isUp);
+        }
+        return
+    }
+    // if (isUp) return;
+    if (!isPressed) pressedTime = e.timeStamp;
+    isPressed = true;
+    arrowPressed = e.key;
+    if (e.timeStamp - pressedTime > HALF_OF_SECOND) {
+        if (e.key === 'ArrowLeft') {
+            keyRewind(e, SONG_DIRECTION.PREVIOUS);
+        } else if (e.key === 'ArrowRight') {
+            keyRewind(e, SONG_DIRECTION.NEXT)
+        }
+    }
+}
+
+function stopKeyRewind(bool) {
+    isPressed = false;
+    progressPopOver.classList.remove('progressPopOver_active');
+    console.log('PopOver removed');
+    audio.currentTime += rewindTime;
+    rewindTime = 0;
+    isUp = bool;
+}
+
+function keyUpRewind(e) {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight' && e.code !== 'Space') return;
+    if (isUp) {
+        if (e.key === arrowPressed) {
+            arrowPressed = undefined;
+            isUp = false;
+            document.addEventListener('keydown', keyDownRewind);
+        }
+        return;
+    }
+
+    if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && (e.timeStamp - pressedTime > HALF_OF_SECOND)) {
+        stopKeyRewind(false)
+        arrowPressed = undefined;
+        return
+    }
+
+    arrowPressed = undefined;
+    isPressed = false;
     if (e.key === 'ArrowLeft') {
         prevSong()
     } else if (e.key === 'ArrowRight') {
         nextSong()
-    } else if (e.key === 'Enter') {
+    } else if (e.code === 'Space') {
         playPauseMusic()
     }
+}
+
+function keyRewind(e, direction) {
+    rewindTime = (e.timeStamp - pressedTime) / MILLISECONDS_IN_SECOND * REWIND_SPEED;
+    console.log(rewindTime);
+    rewindTime = direction === 'next' ? rewindTime : -rewindTime;
+    progressPopOver.classList.add('progressPopOver_active');
+    console.log('popover add');
+    let updatedCurrenTime = audio.currentTime + rewindTime;
+    if (updatedCurrenTime < 0) updatedCurrenTime = 0;
+    if (updatedCurrenTime > audio.duration) updatedCurrenTime = audio.duration;
+    textPopOver.textContent = getTimeString(updatedCurrenTime);
+    const offsetPercent = updatedCurrenTime / audio.duration * TO_PERCENT;
+    progressPopOver.style.left = `${offsetPercent}%`
+    progressBar.style.setProperty('--progress-width', `${offsetPercent}%`)
+
+}
+
+function rewindSong(e) {
+    const offsetX = e.clientX - progressBar.getBoundingClientRect().left;
+    const timePercent = progressBar.clientWidth / offsetX;
+    rewindTime = audio.duration / timePercent;
+    progressPopOver.classList.add('progressPopOver_active');
+    textPopOver.textContent = getTimeString(rewindTime);
+    progressBar.style.setProperty('--progress-width', `${rewindTime / audio.duration * TO_PERCENT}%`)
+    progressPopOver.style.left = `${offsetX}px`
 }
 
 function getTimeString(time) {
@@ -122,63 +249,16 @@ function showTime(isCurrent) {
     if (isCurrent) progressCurrentTime.textContent = getTimeString(time);
     else songDuration.textContent = getTimeString(time);
     const passedTime = audio.currentTime / audio.duration * 100;
-    if (!isMouseMove) progressBar.style.setProperty('--progress-width', `${passedTime}%`);
+    if (!isMouseMove && !isPressed) progressBar.style.setProperty('--progress-width', `${passedTime}%`);
     if (progressBar.style.getPropertyValue('--buffered-width') !== '100%') bufferedTime()
 }
 
 function bufferedTime() {
-    // console.log(progressBar.style.getPropertyValue('--buffered-width'));
-    let bufferedTime = audio.buffered.length > 0 ? audio.buffered.end(0) / audio.duration * 100 : 0;
+    let bufferedTime = audio.buffered.length > 0 ? audio.buffered.end(0) / audio.duration * TO_PERCENT : 0;
     progressBar.style.setProperty('--buffered-width', `${bufferedTime}%`);
 }
 
-function rewindSong(e) {
-    const offsetX = e.clientX - progressBar.getBoundingClientRect().left;
-    // console.log(offsetX, 'offsetX')
-    // console.log(e.offsetX, 'EL')
-    const timeProc = progressBar.clientWidth / offsetX;
-    rewindedTime = audio.duration / timeProc;
-    progressPopOver.classList.add('progressPopOver_active');
-    textPopOver.textContent = getTimeString(rewindedTime);
-    progressBar.style.setProperty('--progress-width', `${rewindedTime / audio.duration * 100}%`)
 
-    progressPopOver.style.left = `${offsetX}px`
-}
-
-let isMouseMove
 init()
 
-playBtn.addEventListener('click', playPauseMusic)
-forwardBtn.addEventListener('click', nextSong);
-rewindBtn.addEventListener('click', prevSong);
-document.addEventListener('keydown', keyRewind);
-audio.addEventListener('ended', nextSong)
-audio.addEventListener('timeupdate', showTime);
-audio.addEventListener('canplay', () => showTime(false))
-audio.addEventListener('progress', bufferedTime);
-progressBarClickZone.addEventListener('mousedown', () => isMouseMove = true);
 
-progressBarClickZone.addEventListener('mouseup', (e) => {
-    isMouseMove = false;
-    rewindSong(e);
-    progressPopOver.classList.remove('progressPopOver_active');
-    audio.currentTime = rewindedTime;
-    // console.log('mouseup');
-});
-
-progressBarClickZone.addEventListener('mouseleave', (e) => {
-    // console.log(isMouseMove)
-    if (!isMouseMove) return;
-
-    audio.currentTime = rewindedTime;
-    progressPopOver.classList.remove('progressPopOver_active');
-     // console.log('mouseout');
-     isMouseMove = false
-     // console.log(e.target);
-})
-
-progressBarClickZone.addEventListener('mousemove', (e) => {
-    if (!isMouseMove) return;
-    // console.log('mousemove', e);
-    rewindSong(e)
-})

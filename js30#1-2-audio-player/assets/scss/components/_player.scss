@@ -5,8 +5,8 @@
 .playerBox {
   @extend %flex-col;
   width: 40rem;
-  height: 70rem;
-
+  //height: 100%;
+  height: fit-content;
   border-radius: 2rem;
   box-shadow: 0 0 4rem $color-black;
   overflow: hidden;
@@ -41,9 +41,9 @@
 
 .songBox {
   width: 100%;
-  height: 30rem;
+  //height: 30rem;
   background-image: linear-gradient(to bottom right, $color-primary-dark, $color-primary);
-  padding: 1rem;
+  padding: 3rem;
   @extend %flex-col;
   gap: 2rem;
 }
@@ -111,7 +111,7 @@ cursor: pointer;
   position: absolute;
   top: -30%;
   transform: translateX(-50%);
-  background-color: $color-primary-light;
+  background-color: rgba($color-primary-light, 0.8);
   width: 4rem;
   height: 2.5rem;
   clip-path: polygon(0% 0%, 100% 0%, 100% 75%, 60% 75%, 50% 100%, 40% 75%, 0% 75%);
