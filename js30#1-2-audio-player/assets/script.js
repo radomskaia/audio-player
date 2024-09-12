@@ -4,6 +4,23 @@ const SONG_DIRECTION = {
 }
 
 const SECONDS_IN_MINUTES = 60;
+const HALF_OF_SECOND = 500;
+const MILLISECONDS_IN_SECOND = 1000;
+const REWIND_SPEED = 30;
+const TO_PERCENT = 100;
+
+const VOLUME = {
+    MUTE: 0,
+    LOW: 0.25,
+    MEDIUM: 0.5,
+    HIGH: 0.75,
+    MAX: 1,
+};
+const REPEAT = {
+    ALL: 0,
+    ONE: 1,
+    SHUFFLE: 2,
+}
 
 const album = [
     {
@@ -18,10 +35,20 @@ const album = [
         audioSrc: 'assets/audio/02 Nuki Sabotage.mp3',
         coverSrc: 'assets/image/covers/02 Nuki Sabotage.jpeg',
     },
+    {
+        artist: 'Oomph',
+        songName: 'Augen auf',
+        audioSrc: 'assets/audio/03 Oomph Augen auf.mp3',
+        coverSrc: 'assets/image/covers/03 Oomph Augen auf.jpeg',
+    },
+
 ]
 
-let playerStatus, songNumber, audio, rewindBtn, playBtn, forwardBtn, coverImg, artistName, songName, nextSong, prevSong,
-    progressCurrentTime, songDuration, progressBar, progressPopOver, textPopOver, rewindedTime, progressBarClickZone;
+
+let isPlay, songNumber, audio, coverImg, artistName, songName, playBtn, rewindBtn, forwardBtn, progressCurrentTime,
+    songDuration, progressBar, progressPopOver, textPopOver, rewindTime, isMouseMove, pressedTime, isPressed, nextSong,
+    prevSong, isUp, arrowPressed, repeatBtn, volumeBtn, volumeValue = 0.5, repeatValue = 0, isShuffle,
+    shuffleSet = new Set, bodyEl;
 
 function createDOMElement(tagName, parentElement, ...classList) {
     const newEl = document.createElement(tagName);
@@ -34,10 +61,9 @@ function createDOMElement(tagName, parentElement, ...classList) {
 
 
 function init() {
-    const body = document.body;
-    const container = createDOMElement('div', body, 'container');
-    const container = createDOMElement('main', body, 'container');
-    const footer = createDOMElement('footer', body, 'footer');
+    bodyEl = document.body;
+    const container = createDOMElement('main', bodyEl, 'container');
+    const footer = createDOMElement('footer', bodyEl, 'footer');
     const currYear = createDOMElement('p', footer, 'currYear');
     currYear.textContent = `${new Date().getFullYear()}`;
     const link1 = createDOMElement('a', footer, 'link');
@@ -54,6 +80,7 @@ function init() {
     rsSchool.src = 'assets/image/icons/logo-rsschool3.png';
     const playerBox = createDOMElement('div', container, 'playerBox');
     const coverBox = createDOMElement('div', playerBox, 'coverBox');
+    coverBox.style.height = `${coverBox.clientWidth}px`
     coverImg = createDOMElement('img', coverBox, 'coverImg');
     coverImg.alt = 'cover';
     const songBox = createDOMElement('div', playerBox, 'songBox');
@@ -69,39 +96,48 @@ function init() {
     progressCurrentTime = createDOMElement('p', timeBox, 'currentTime');
     songDuration = createDOMElement('p', timeBox, 'songDuration');
     const buttonBox = createDOMElement('div', songBox, 'buttonBox');
+    repeatBtn = createDOMElement('img', buttonBox, 'optionsBtn');
     rewindBtn = createDOMElement('img', buttonBox, 'rewindBtn', 'btn');
     playBtn = createDOMElement('img', buttonBox, 'playBtn', 'btn');
     forwardBtn = createDOMElement('img', buttonBox, 'rewindBtn', 'btn');
-
+    volumeBtn = createDOMElement('img', buttonBox, 'optionsBtn');
 
     audio = new Audio();
     console.log(audio)
     isPlay = false;
     songNumber = 0
-    audio.src = album[songNumber].audioSrc;
-    coverImg.src = album[songNumber].coverSrc;
-    artistName.textContent = album[songNumber].artist;
-    songName.textContent = album[songNumber].songName;
 
+    renderSongData ()
     showTime(true)
+    changeRepeat()
+    changeVolume()
 
+    repeatBtn.alt = 'repeat selection button';
     rewindBtn.alt = 'play/rewind button';
     rewindBtn.src = 'assets/image/icons/icons8-rewind-64.png';
     playBtn.alt = 'play/pause button';
     playBtn.src = 'assets/image/icons/icons8-play-64.png'
     forwardBtn.alt = 'play/rewind button';
     forwardBtn.src = 'assets/image/icons/icons8-fast-forward-64.png';
+    volumeBtn.alt = 'volume selection button';
 
-    nextSong = changeSongNumber.bind('next');
-    prevSong = changeSongNumber.bind('prev');
+    nextSong = changeSong.bind('next');
+    prevSong = changeSong.bind('prev');
 
     // Event Listeners
+    repeatBtn.addEventListener('click', () => {
+        repeatValue = repeatValue >= REPEAT.SHUFFLE ? REPEAT.ALL : repeatValue + 1;
+        changeRepeat();
+    });
+    volumeBtn.addEventListener('click', () => {
+        volumeValue = volumeValue >= VOLUME.MAX ? VOLUME.MUTE : volumeValue + 0.25;
+        changeVolume();
+    });
     playBtn.addEventListener('click', playPauseMusic)
     forwardBtn.addEventListener('click', nextSong);
     rewindBtn.addEventListener('click', prevSong);
     document.addEventListener('keydown', keyDownRewind);
     document.addEventListener('keyup', keyUpRewind);
-    audio.addEventListener('ended', nextSong)
     audio.addEventListener('timeupdate', showTime);
     audio.addEventListener('canplay', () => showTime(false))
     audio.addEventListener('progress', bufferedTime);
@@ -114,7 +150,7 @@ function init() {
         audio.currentTime = rewindTime;
     });
 
-    progressBarClickZone.addEventListener('mouseleave', (e) => {
+    progressBarClickZone.addEventListener('mouseleave', () => {
         if (!isMouseMove) return;
 
         audio.currentTime = rewindTime;
@@ -136,19 +172,38 @@ function playPauseMusic() {
     playBtn.src = isPlay ? 'assets/image/icons/icons8-pause-64.png' : 'assets/image/icons/icons8-play-64.png';
 }
 
-function changeSongNumber() {
-    if (this === SONG_DIRECTION.NEXT) songNumber++;
-    else if (this === SONG_DIRECTION.PREVIOUS) songNumber--;
+function randomSong() {
+    if (!isShuffle) return false
+    if (shuffleSet.size === album.length) shuffleSet.clear()
+    shuffleSet.add(songNumber);
+    let setSize = shuffleSet.size;
+    do {
+        songNumber = Math.floor(Math.random() * album.length);
+        shuffleSet.add(songNumber)
+    } while (setSize === shuffleSet.size);
 
-    if (songNumber + 1 > album.length) songNumber = 0;
-    if (songNumber < 0) songNumber = album.length - 1;
+    return true
+}
 
+function changeSong() {
+    if (!randomSong()) {
+        if (this === SONG_DIRECTION.NEXT) songNumber++;
+        else if (this === SONG_DIRECTION.PREVIOUS) songNumber--;
+        if (songNumber + 1 > album.length) songNumber = 0;
+        if (songNumber < 0) songNumber = album.length - 1;
+    }
+    renderSongData()
+
+    isPlay = false;
+    playPauseMusic()
+}
+
+function renderSongData() {
+    bodyEl.style.backgroundImage = `linear-gradient(to bottom right, rgba(22, 66, 60, 0.8), rgba(22, 66, 60, 0.8)), url('${album[songNumber].coverSrc}')`;
     audio.src = album[songNumber].audioSrc;
     coverImg.src = album[songNumber].coverSrc;
     artistName.textContent = album[songNumber].artist;
     songName.textContent = album[songNumber].songName;
-    isPlay = false;
-    playPauseMusic()
 }
 
 function keyDownRewind(e) {
@@ -258,6 +313,45 @@ function bufferedTime() {
     progressBar.style.setProperty('--buffered-width', `${bufferedTime}%`);
 }
 
+function changeRepeat() {
+    switch (repeatValue) {
+        case REPEAT.ALL:
+            isShuffle = false;
+            shuffleSet.clear()
+            audio.onended = nextSong;
+            break;
+        case REPEAT.ONE:
+            audio.onended = changeSong;
+            break;
+        case REPEAT.SHUFFLE:
+            isShuffle = true;
+            audio.onended = nextSong;
+            break;
+    }
+    repeatBtn.src = `assets/image/icons/icons8-repeat-${repeatValue}-64.png`;
+
+}
+
+function changeVolume() {
+    switch (volumeValue) {
+        case VOLUME.MUTE:
+            audio.volume = VOLUME.MUTE;
+            break;
+        case VOLUME.LOW:
+            audio.volume = VOLUME.LOW;
+            break;
+        case VOLUME.MEDIUM:
+            audio.volume = VOLUME.MEDIUM;
+            break;
+        case VOLUME.HIGH:
+            audio.volume = VOLUME.HIGH;
+            break;
+        case VOLUME.MAX:
+            audio.volume = VOLUME.MAX;
+            break;
+    }
+    volumeBtn.src = `assets/image/icons/icons8-volume-${volumeValue}-64.png`;
+}
 
 init()
 

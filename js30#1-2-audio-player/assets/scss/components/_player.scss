@@ -48,22 +48,6 @@
   gap: 2rem;
 }
 
-.btn {
-  border-radius: 50%;
-  transition: all, 0.2s ease;
-}
-
-.btn:hover {
-  cursor: pointer;
-  backdrop-filter: brightness(50%);
-  transform: translateY(-2px);
-}
-
-.btn:active {
-  cursor: pointer;
-  backdrop-filter: brightness(120%);
-  transform: translateY(0);
-}
 
 .nameBox {
   @extend %flex-col;
@@ -76,15 +60,6 @@
   gap: 1rem;
 }
 
-.playBtn {
-  width: 6rem;
-  height: 6rem;
-}
-
-.rewindBtn {
-  width: 4rem;
-  height: 4rem;
-}
 
 .progressBarClickZone {
   height: 3rem;
