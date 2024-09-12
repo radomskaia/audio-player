@@ -22,3 +22,10 @@ body {
   background-position: center;
   background-size: cover;
 }
+
+.container {
+  width: 100%;
+  height: calc(100vh - 9rem);
+  @extend %flex;
+  @extend %flex-center;
+}

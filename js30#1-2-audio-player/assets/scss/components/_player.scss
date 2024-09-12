@@ -5,7 +5,6 @@
 .playerBox {
   @extend %flex-col;
   width: 40rem;
-  //height: 100%;
   height: fit-content;
   border-radius: 2rem;
   box-shadow: 0 0 4rem $color-black;
@@ -15,7 +14,6 @@
 
 .coverBox {
   width: 100%;
-  //height: auto;
   border-bottom: 2px solid $color-primary-dark;
 }
 
@@ -26,22 +24,8 @@
   transition: all .2s;
 }
 
-//.songBox {
-//  width: 100%;
-//  height: 20rem;
-//  background-image: linear-gradient(to bottom right, $color-primary-dark, $color-primary);
-//}
-//
-//.songBar {
-//  width: 100%;
-//  padding: 1rem;
-//  @extend %flex-col;
-//  gap: 2rem;
-//}
-
 .songBox {
   width: 100%;
-  //height: 30rem;
   background-image: linear-gradient(to bottom right, $color-primary-dark, $color-primary);
   padding: 3rem;
   @extend %flex-col;
@@ -68,21 +52,20 @@
 }
 
 .progressBarClickZone:hover {
-cursor: pointer;
+  cursor: pointer;
 }
 
 .progressBox {
   width: 70%;
   @extend %flex-col;
   margin: 0 auto;
-  //gap: 0.5rem;
   position: relative;
 }
 
 .progressPopOver {
-   @extend %flex;
+  @extend %flex;
   justify-content: flex-start;
-  padding-left: 0.7rem ;
+  padding-left: 0.7rem;
   position: absolute;
   top: -30%;
   transform: translateX(-50%);
@@ -90,9 +73,8 @@ cursor: pointer;
   width: 4rem;
   height: 2.5rem;
   clip-path: polygon(0% 0%, 100% 0%, 100% 75%, 60% 75%, 50% 100%, 40% 75%, 0% 75%);
-  //transition: opacity .2s;
   opacity: 0;
-  //pointer-events: none;
+  pointer-events: none;
   visibility: hidden;
 }
 
@@ -106,7 +88,6 @@ cursor: pointer;
   width: 100%;
   height: 6px;
   background-color: $color-primary;
-  //background-color: #fff;
   border-radius: 10rem;
   position: relative;
   border: 1px solid $color-primary-dark;
@@ -114,7 +95,7 @@ cursor: pointer;
 }
 
 .progressBar:hover {
-cursor: pointer;
+  cursor: pointer;
 }
 
 .progressBar::after {
@@ -122,7 +103,6 @@ cursor: pointer;
   height: 6px;
   background-color: $color-primary-dark;
   border-radius: 10rem;
-  //border: 1px solid $color-primary-light;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -131,7 +111,7 @@ cursor: pointer;
 }
 
 .progressBar::before {
-   content: '';
+  content: '';
   height: 4px;
   background-color: $color-primary-light;
   border-radius: 10rem;
@@ -140,7 +120,6 @@ cursor: pointer;
   transform: translateY(-50%);
   left: 0;
   width: var(--buffered-width);
-  //width: 50%;
 }
 
 .timeBox {
