@@ -22,19 +22,55 @@ const REPEAT = {
 
 const album = [
     {
-        artist: 'Linkin Park',
-        songName: 'The Emptiness Machine',
-        audioSrc: 'assets/audio/01 The Emptiness Machine.mp3',
-        coverSrc: 'assets/image/covers/01 The Emptiness Machine.jpeg',
+        artist: 'Suno',
+        songName: 'Front-end course',
+        audioSrc: 'assets/audio/01 Front-end course.mp3',
+        coverSrc: 'assets/image/covers/01 Front-end course.jpeg',
     },
     {
-        artist: 'Nuki',
+        artist: 'SUNOback',
+        songName: 'Expulsion',
+        audioSrc: 'assets/audio/02 Expulsion.mp3',
+        coverSrc: 'assets/image/covers/02 Expulsion.jpeg',
+    },
+    {
+        artist: 'Three Suno Grace',
+        songName: 'Gratitude',
+        audioSrc: 'assets/audio/03 Gratitude.mp3',
+        coverSrc: 'assets/image/covers/03 Gratitude.jpeg',
+    },
+    {
+        artist: 'Suno Park',
+        songName: 'Сode of conduct',
+        audioSrc: 'assets/audio/04 Сode of conduct.mp3',
+        coverSrc: 'assets/image/covers/04 Сode of conduct.jpeg',
+    },
+    {
+        artist: 'SUNOstein',
+        songName: 'Cross-check',
+        audioSrc: 'assets/audio/05 Cross-check.mp3',
+        coverSrc: 'assets/image/covers/05 Cross-check.jpeg',
+    },
+    {
+        artist: 'SU/NO',
+        songName: 'Mentor',
+        audioSrc: 'assets/audio/06 Mentor.mp3',
+        coverSrc: 'assets/image/covers/06 Mentor.jpeg',
+    },
+    {
+        artist: 'SUNOllica',
+        songName: 'RS Activist',
+        audioSrc: 'assets/audio/07 RS Activist.mp3',
+        coverSrc: 'assets/image/covers/07 RS Activist.jpeg',
+    },
+    {
+        artist: '8',
         songName: 'Sabotage',
         audioSrc: 'assets/audio/02 Nuki Sabotage.mp3',
         coverSrc: 'assets/image/covers/02 Nuki Sabotage.jpeg',
     },
     {
-        artist: 'Oomph',
+        artist: '9',
         songName: 'Augen auf',
         audioSrc: 'assets/audio/03 Oomph Augen auf.mp3',
         coverSrc: 'assets/image/covers/03 Oomph Augen auf.jpeg',
