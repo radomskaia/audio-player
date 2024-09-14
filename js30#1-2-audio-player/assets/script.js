@@ -63,19 +63,6 @@ const album = [
         audioSrc: 'assets/audio/07 RS Activist.mp3',
         coverSrc: 'assets/image/covers/07 RS Activist.jpeg',
     },
-    {
-        artist: '8',
-        songName: 'Sabotage',
-        audioSrc: 'assets/audio/02 Nuki Sabotage.mp3',
-        coverSrc: 'assets/image/covers/02 Nuki Sabotage.jpeg',
-    },
-    {
-        artist: '9',
-        songName: 'Augen auf',
-        audioSrc: 'assets/audio/03 Oomph Augen auf.mp3',
-        coverSrc: 'assets/image/covers/03 Oomph Augen auf.jpeg',
-    },
-
 ]
 
 
