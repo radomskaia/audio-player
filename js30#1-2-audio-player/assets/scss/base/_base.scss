@@ -26,8 +26,8 @@ body {
 
 .container {
   width: 100%;
-  height: calc(100vh - 7rem);
-  padding: 1rem 3rem;
+  height: calc(100vh - 7.4rem);
+  padding: 1rem 3rem 0 3rem;
   @extend %flex;
   @extend %flex-center;
 }
@@ -38,5 +38,5 @@ html {
   font-size: 56.25%;
 }
   .container {
-  height: calc(100vh - 5rem);
+  height: calc(100vh - 7.4rem);
     }}

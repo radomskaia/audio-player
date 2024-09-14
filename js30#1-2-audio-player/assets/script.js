@@ -299,6 +299,7 @@ function getTimeString(time) {
 
 function showProgress() {
     const passedTime = audio.currentTime / audio.duration * 100;
+    progressCurrentTime.textContent = getTimeString(audio.currentTime)
     if (!isMouseMove && !isPressed) progressBar.style.setProperty('--progress-width', `${passedTime}%`);
     if (progressBar.style.getPropertyValue('--buffered-width') !== '100%') bufferedTime()
 }
