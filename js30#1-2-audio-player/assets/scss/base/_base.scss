@@ -21,11 +21,22 @@ body {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+  backdrop-filter: blur(4px);
 }
 
 .container {
   width: 100%;
-  height: calc(100vh - 9rem);
+  height: calc(100vh - 7rem);
+  padding: 1rem 3rem;
   @extend %flex;
   @extend %flex-center;
 }
+
+@media only screen and (max-width: 40em) {
+html {
+  // 1 rem = 9px
+  font-size: 56.25%;
+}
+  .container {
+  height: calc(100vh - 5rem);
+    }}

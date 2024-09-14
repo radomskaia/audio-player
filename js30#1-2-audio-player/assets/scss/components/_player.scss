@@ -4,10 +4,10 @@
 
 .playerBox {
   @extend %flex-col;
-  width: 40rem;
+  width: 35rem;
   height: fit-content;
   border-radius: 2rem;
-  box-shadow: 0 0 4rem $color-black;
+  box-shadow: 0 0 6rem $color-black;
   overflow: hidden;
   border: 2px solid $color-primary-dark;
 }

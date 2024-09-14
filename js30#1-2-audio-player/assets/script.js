@@ -115,7 +115,7 @@ function init() {
 
 
     renderSongData()
-    showTime(true)
+    progressCurrentTime.textContent = getTimeString(audio.currentTime);
     changeRepeat()
     changeVolume()
 
@@ -133,8 +133,8 @@ function init() {
     rewindBtn.addEventListener('click', prevSong);
     document.addEventListener('keydown', keyDown);
     document.addEventListener('keyup', keyUp);
-    audio.addEventListener('timeupdate', showTime);
-    audio.addEventListener('canplay', () => showTime(false))
+    audio.addEventListener('timeupdate', showProgress);
+    audio.addEventListener('canplay', () => songDuration.textContent = getTimeString(audio.duration))
     audio.addEventListener('progress', bufferedTime);
     progressBarClickZone.addEventListener('mousedown', () => isMouseMove = true);
 
@@ -162,7 +162,6 @@ function playPauseMusic() {
 }
 
 function randomSong() {
-    if (!isShuffle) return false
     if (shuffleSet.size === album.length) shuffleSet.clear()
     shuffleSet.add(currentSongIndex);
     let setSize = shuffleSet.size;
@@ -170,34 +169,34 @@ function randomSong() {
         currentSongIndex = Math.floor(Math.random() * album.length);
         shuffleSet.add(currentSongIndex)
     } while (setSize === shuffleSet.size);
-    return true
 }
 
 
 function switchSong() {
-    if (!randomSong()) {
-        if (this === SONG_DIRECTION.NEXT) currentSongIndex++;
-        else if (this === SONG_DIRECTION.PREVIOUS) currentSongIndex--;
+    if (typeof this === 'object') return;
+    if (isShuffle) randomSong();
+    else {
+        this === SONG_DIRECTION.NEXT ? currentSongIndex++ : currentSongIndex--;
 
         if (currentSongIndex + 1 > album.length) currentSongIndex = 0;
         else if (currentSongIndex < 0) currentSongIndex = album.length - 1;
     }
     renderSongData()
+    if (isPlay) playPauseMusic();
     playPauseMusic()
 }
 
 function renderSongData() {
-    bodyEl.style.backgroundImage = `linear-gradient(to bottom right, rgba(22, 66, 60, 0.8), rgba(22, 66, 60, 0.8)), url('${album[currentSongIndex].coverSrc}')`;
+    bodyEl.style.backgroundImage = `linear-gradient(to bottom right, rgba(196, 218, 210, 0.8), rgba(196, 218, 210, 0.8)), url('${album[currentSongIndex].coverSrc}')`;
     audio.src = album[currentSongIndex].audioSrc;
     coverImg.src = album[currentSongIndex].coverSrc;
     artistName.textContent = album[currentSongIndex].artist;
     songName.textContent = album[currentSongIndex].songName;
-    isPlay = false;
 }
 
 function keyDown(e) {
     if ((e.key !== 'ArrowLeft' && e.key !== 'ArrowRight')
-        || (e.key !== arrowPressed && arrowPressed !== undefined)) {
+        || (arrowPressed !== undefined) && e.key !== arrowPressed) {
         if (isPressed) {
             stopRewind(true, 'key')
             document.removeEventListener('keydown', keyDown);
@@ -207,19 +206,13 @@ function keyDown(e) {
     if (!pressedTime) pressedTime = e.timeStamp;
     isPressed = e.timeStamp - pressedTime > HALF_OF_SECOND;
     arrowPressed = e.key;
-    if (isPressed) {
-        if (e.key === 'ArrowLeft') {
-            rewindSong(e, SONG_DIRECTION.PREVIOUS);
-        } else if (e.key === 'ArrowRight') {
-            rewindSong(e, SONG_DIRECTION.NEXT)
-        }
-    }
+    if (isPressed) rewindSong(e, e.key === 'ArrowLeft' ? SONG_DIRECTION.PREVIOUS : SONG_DIRECTION.NEXT);
 }
 
 function keyUp(e) {
-    pressedTime = undefined;
-
     if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight' && e.code !== 'Space') return;
+
+    pressedTime = undefined;
     if (isUp) {
         if (e.key === arrowPressed) {
             isUp = false;
@@ -229,14 +222,14 @@ function keyUp(e) {
         return;
     }
 
-    if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && isPressed) {
+    if (e.code === 'Space') {
+        playPauseMusic()
+    } else if (isPressed) {
         stopRewind(false, 'key')
     } else if (e.key === 'ArrowLeft') {
         prevSong()
     } else if (e.key === 'ArrowRight') {
         nextSong()
-    } else if (e.code === 'Space') {
-        playPauseMusic()
     }
 
     arrowPressed = undefined;
@@ -263,7 +256,7 @@ function rewindSong(e, direction) {
     progressBar.style.setProperty('--progress-width', `${offsetPercent}%`)
 }
 
-function stopRewind(bool, type) {
+function stopRewind(bool, type = 'mouse') {
     if (type === 'key') {
         isPressed = false;
         isUp = bool;
@@ -278,13 +271,10 @@ function stopRewind(bool, type) {
 function getTimeString(time) {
     const timeMin = Math.floor(time / SECONDS_IN_MINUTES);
     const timeSec = Math.floor(time % SECONDS_IN_MINUTES);
-    return `${timeMin > 0 ? timeMin : 0}:${timeSec > '0' ? timeSec.toString().padStart(2, '0') : '00'}`
+    return `${timeMin}:${timeSec.toString().padStart(2, '0')}`
 }
 
-function showTime(isCurrent) {
-    const time = isCurrent ? audio.currentTime : audio.duration;
-    if (isCurrent) progressCurrentTime.textContent = getTimeString(time);
-    else songDuration.textContent = getTimeString(time);
+function showProgress() {
     const passedTime = audio.currentTime / audio.duration * 100;
     if (!isMouseMove && !isPressed) progressBar.style.setProperty('--progress-width', `${passedTime}%`);
     if (progressBar.style.getPropertyValue('--buffered-width') !== '100%') bufferedTime()
