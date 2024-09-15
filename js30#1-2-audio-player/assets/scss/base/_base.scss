@@ -1,4 +1,3 @@
-@import "../abstracts/mixins";
 @import "../abstracts/placeholders";
 @import "../abstracts/variables";
 
@@ -26,7 +25,7 @@ body {
 
 .container {
   width: 100%;
-  height: calc(100vh - 7.4rem);
+  height: calc(100dvh - 7.4rem);
   padding: 1rem 3rem 0 3rem;
   @extend %flex;
   @extend %flex-center;
@@ -38,5 +37,5 @@ html {
   font-size: 56.25%;
 }
   .container {
-  height: calc(100vh - 7.4rem);
+  height: calc(100dvh - 7.4rem);
     }}

@@ -275,11 +275,15 @@ function keyUp(e) {
 
 function rewindSong(e, direction) {
     let offsetX;
+    if (!audio.duration) {
+        audio.load();
+    }
     if (!direction) {
         if (isMobile) {
             const touch = e.touches[0] || e.changedTouches[0];
-            console.log(e)
             offsetX = touch.clientX - progressBar.getBoundingClientRect().left;
+            offsetX = offsetX > progressBar.getBoundingClientRect().left ? progressBar.getBoundingClientRect().left : offsetX;
+            offsetX = offsetX < 0 ? 0 : offsetX;
         } else {
             offsetX = e.clientX - progressBar.getBoundingClientRect().left;
         }
