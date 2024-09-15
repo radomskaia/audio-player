@@ -195,8 +195,7 @@ function playPauseMusic() {
     else audio.play();
     coverImg.classList.toggle('coverImg_played');
     isPlay = !isPlay;
-    if (isPlay)
-        playBtn.src = isPlay ? 'assets/image/icons/icons8-pause-64.png' : 'assets/image/icons/icons8-play-64.png';
+    playBtn.src = isPlay ? 'assets/image/icons/icons8-pause-64.png' : 'assets/image/icons/icons8-play-64.png';
 }
 
 function randomSong() {
