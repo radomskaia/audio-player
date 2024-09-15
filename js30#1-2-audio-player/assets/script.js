@@ -169,7 +169,7 @@ function init() {
         })
         progressBarClickZone.addEventListener('touchmove', (e) => {
             rewindSong(e)
-        }, {passive: true});
+        });
     } else {
         progressBarClickZone.addEventListener('mousedown', () => isMouseMove = true);
 
@@ -276,8 +276,7 @@ function keyUp(e) {
 function rewindSong(e, direction) {
     let offsetX;
     if (!audio.duration) {
-        audio.play();
-        audio.pause()
+       return
     }
     if (!direction) {
         const progressBarLeftOffset = progressBar.getBoundingClientRect().left;
