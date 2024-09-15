@@ -276,31 +276,34 @@ function keyUp(e) {
 function rewindSong(e, direction) {
     let offsetX;
     if (!audio.duration) {
-        audio.load();
+        audio.play();
+        audio.pause()
     }
     if (!direction) {
+        const progressBarLeftOffset = progressBar.getBoundingClientRect().left;
         if (isMobile) {
             const touch = e.touches[0] || e.changedTouches[0];
-            offsetX = touch.clientX - progressBar.getBoundingClientRect().left;
-            offsetX = offsetX > progressBar.getBoundingClientRect().left ? progressBar.getBoundingClientRect().left : offsetX;
-            offsetX = offsetX < 0 ? 0 : offsetX;
+            offsetX = touch.clientX - progressBarLeftOffset;
         } else {
-            offsetX = e.clientX - progressBar.getBoundingClientRect().left;
+            offsetX = e.clientX - progressBarLeftOffset;
         }
-        const timePercent = progressBar.clientWidth / offsetX;
+
+        let timePercent = progressBar.clientWidth / offsetX;
         rewindTime = audio.duration / timePercent;
     } else {
         rewindTime = (e.timeStamp - pressedTime - HALF_OF_SECOND) / MILLISECONDS_IN_SECOND * REWIND_SPEED;
         rewindTime = direction === 'next' ? rewindTime : -rewindTime;
         rewindTime = audio.currentTime + rewindTime;
-        if (rewindTime < 0) rewindTime = 0;
-        if (rewindTime > audio.duration) rewindTime = audio.duration;
     }
 
+    if (rewindTime < 0) rewindTime = 0;
+    else if (rewindTime > audio.duration) rewindTime = audio.duration;
     progressPopOver.classList.add('progressPopOver_active');
-    const offsetPercent = rewindTime / audio.duration * TO_PERCENT;
+    let offsetPercent = rewindTime / audio.duration * TO_PERCENT;
+    if (offsetPercent > 100) offsetPercent = 100;
+    else if (offsetPercent < 0) offsetPercent = 0;
     textPopOver.textContent = getTimeString(rewindTime);
-    progressPopOver.style.left = offsetX ? `${offsetX}px` : `${offsetPercent}%`;
+    progressPopOver.style.left = `${offsetPercent}%`;
     progressBar.style.setProperty('--progress-width', `${offsetPercent}%`)
 }
 
