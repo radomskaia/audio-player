@@ -169,6 +169,7 @@ body {
 .coverBox {
   width: 100%;
   border-bottom: 2px solid #16423C;
+  overflow: hidden;
 }
 
 .coverImg {
@@ -176,6 +177,10 @@ body {
   height: 100%;
   object-fit: cover;
   transition: all 0.2s;
+}
+
+.coverImg_played {
+  transform: scale(1.1);
 }
 
 .songBox {

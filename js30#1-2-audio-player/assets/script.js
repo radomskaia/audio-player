@@ -69,8 +69,8 @@ const album = [
 let isPlay, currentSongIndex = 0, audio = new Audio(), coverImg, artistName, songName, playBtn, rewindBtn, forwardBtn,
     progressCurrentTime,
     songDuration, progressBar, progressPopOver, textPopOver, rewindTime, isMouseMove, pressedTime, isPressed, nextSong,
-    prevSong, isUp, arrowPressed, repeatBtn, volumeBtn, volumeValue = 0.5, repeatValue = 0, isShuffle,
-    shuffleSet = new Set, bodyEl;
+    prevSong, isUp, arrowPressed, repeatBtn, volumeBtn, repeatValue = 0, isShuffle,
+    shuffleSet = new Set, bodyEl, isMobile;
 
 function createDOMElement(tagName, parentElement, ...classList) {
     const newEl = document.createElement(tagName);
@@ -136,20 +136,22 @@ function init() {
     nextSong = switchSong.bind('next');
     prevSong = switchSong.bind('prev');
 
+    isMobile = /Mobi|Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/.test(navigator.userAgent);
 
     renderSongData()
     progressCurrentTime.textContent = getTimeString(audio.currentTime);
     changeRepeat()
-    changeVolume()
+    volumeBtn.src = `assets/image/icons/icons8-volume-${VOLUME.MAX}-64.png`;
 
     // Event Listeners
+
     repeatBtn.addEventListener('click', () => {
         repeatValue = repeatValue >= REPEAT.SHUFFLE ? REPEAT.ALL : repeatValue + 1;
         changeRepeat();
     });
     volumeBtn.addEventListener('click', () => {
-        volumeValue = volumeValue >= VOLUME.MAX ? VOLUME.MUTE : volumeValue + 0.25;
-        changeVolume();
+        const volumeValue = audio.volume <= VOLUME.MUTE ? VOLUME.MAX : audio.volume - 0.25;
+        changeVolume(volumeValue);
     });
     playBtn.addEventListener('click', playPauseMusic)
     forwardBtn.addEventListener('click', nextSong);
@@ -159,29 +161,42 @@ function init() {
     audio.addEventListener('timeupdate', showProgress);
     audio.addEventListener('canplay', () => songDuration.textContent = getTimeString(audio.duration))
     audio.addEventListener('progress', bufferedTime);
-    progressBarClickZone.addEventListener('mousedown', () => isMouseMove = true);
+    if (isMobile) {
+        progressBarClickZone.addEventListener('touchstart', () => isMouseMove = true, {passive: true})
+        progressBarClickZone.addEventListener('touchend', (e) => {
+            rewindSong(e);
+            stopRewind();
+        })
+        progressBarClickZone.addEventListener('touchmove', (e) => {
+            rewindSong(e)
+        }, {passive: true});
+    } else {
+        progressBarClickZone.addEventListener('mousedown', () => isMouseMove = true);
 
-    progressBarClickZone.addEventListener('mouseup', (e) => {
-        rewindSong(e);
-        stopRewind()
-    });
+        progressBarClickZone.addEventListener('mouseup', (e) => {
+            rewindSong(e);
+            stopRewind();
+        });
 
-    progressBarClickZone.addEventListener('mouseleave', () => {
-        if (!isMouseMove) return;
-        stopRewind()
-    })
+        progressBarClickZone.addEventListener('mouseleave', () => {
+            if (!isMouseMove) return;
+            stopRewind()
+        })
 
-    progressBarClickZone.addEventListener('mousemove', (e) => {
-        if (!isMouseMove) return;
-        rewindSong(e)
-    })
+        progressBarClickZone.addEventListener('mousemove', (e) => {
+            if (!isMouseMove) return;
+            rewindSong(e)
+        })
+    }
 }
 
 function playPauseMusic() {
     if (isPlay) audio.pause();
     else audio.play();
+    coverImg.classList.toggle('coverImg_played');
     isPlay = !isPlay;
-    playBtn.src = isPlay ? 'assets/image/icons/icons8-pause-64.png' : 'assets/image/icons/icons8-play-64.png';
+    if (isPlay)
+        playBtn.src = isPlay ? 'assets/image/icons/icons8-pause-64.png' : 'assets/image/icons/icons8-play-64.png';
 }
 
 function randomSong() {
@@ -196,15 +211,16 @@ function randomSong() {
 
 
 function switchSong() {
-    if (typeof this === 'object') return;
-    if (isShuffle) randomSong();
-    else {
-        this === SONG_DIRECTION.NEXT ? currentSongIndex++ : currentSongIndex--;
+    if (typeof this !== 'object') {
+        if (isShuffle) randomSong();
+        else {
+            this === SONG_DIRECTION.NEXT ? currentSongIndex++ : currentSongIndex--;
 
-        if (currentSongIndex + 1 > album.length) currentSongIndex = 0;
-        else if (currentSongIndex < 0) currentSongIndex = album.length - 1;
+            if (currentSongIndex + 1 > album.length) currentSongIndex = 0;
+            else if (currentSongIndex < 0) currentSongIndex = album.length - 1;
+        }
+        renderSongData()
     }
-    renderSongData()
     if (isPlay) playPauseMusic();
     playPauseMusic()
 }
@@ -261,7 +277,13 @@ function keyUp(e) {
 function rewindSong(e, direction) {
     let offsetX;
     if (!direction) {
-        const offsetX = e.clientX - progressBar.getBoundingClientRect().left;
+        if (isMobile) {
+            const touch = e.touches[0] || e.changedTouches[0];
+            console.log(e)
+            offsetX = touch.clientX - progressBar.getBoundingClientRect().left;
+        } else {
+            offsetX = e.clientX - progressBar.getBoundingClientRect().left;
+        }
         const timePercent = progressBar.clientWidth / offsetX;
         rewindTime = audio.duration / timePercent;
     } else {
@@ -279,15 +301,15 @@ function rewindSong(e, direction) {
     progressBar.style.setProperty('--progress-width', `${offsetPercent}%`)
 }
 
-function stopRewind(bool, type = 'mouse') {
+function stopRewind(bool = false, type = 'mouse') {
     if (type === 'key') {
         isPressed = false;
         isUp = bool;
     } else {
         isMouseMove = false
     }
-
     progressPopOver.classList.remove('progressPopOver_active');
+    // console.log(audio.currentTime)
     audio.currentTime = rewindTime;
 }
 
@@ -328,7 +350,13 @@ function changeRepeat() {
 
 }
 
-function changeVolume() {
+function changeVolume(volumeValue) {
+    if (isMobile) {
+        audio.muted = !audio.muted;
+        if (audio.muted) volumeBtn.src = `assets/image/icons/icons8-volume-${VOLUME.MUTE}-64.png`;
+        else volumeBtn.src = `assets/image/icons/icons8-volume-${VOLUME.MAX}-64.png`;
+        return
+    }
     switch (volumeValue) {
         case VOLUME.MUTE:
             audio.volume = VOLUME.MUTE;
