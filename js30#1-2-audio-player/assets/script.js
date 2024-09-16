@@ -139,6 +139,7 @@ function init() {
     isMobile = /Mobi|Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/.test(navigator.userAgent);
 
     renderSongData()
+    audio.load()
     progressCurrentTime.textContent = getTimeString(audio.currentTime);
     changeRepeat()
     volumeBtn.src = `assets/image/icons/icons8-volume-${VOLUME.MAX}-64.png`;
@@ -162,14 +163,15 @@ function init() {
     audio.addEventListener('canplay', () => songDuration.textContent = getTimeString(audio.duration))
     audio.addEventListener('progress', bufferedTime);
     if (isMobile) {
-        progressBarClickZone.addEventListener('touchstart', () => isMouseMove = true, {passive: true})
+        progressBarClickZone.addEventListener('touchstart', () => isMouseMove = true)
         progressBarClickZone.addEventListener('touchend', (e) => {
             rewindSong(e);
             stopRewind();
         })
         progressBarClickZone.addEventListener('touchmove', (e) => {
+            e.preventDefault()
             rewindSong(e)
-        });
+        }, {passive: false});
     } else {
         progressBarClickZone.addEventListener('mousedown', () => isMouseMove = true);
 
@@ -275,9 +277,6 @@ function keyUp(e) {
 
 function rewindSong(e, direction) {
     let offsetX;
-    if (!audio.duration) {
-       return
-    }
     if (!direction) {
         const progressBarLeftOffset = progressBar.getBoundingClientRect().left;
         if (isMobile) {
