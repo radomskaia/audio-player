@@ -25,43 +25,43 @@ const album = [
         artist: 'Suno',
         songName: 'Front-end course',
         audioSrc: 'assets/audio/01 Front-end course.mp3',
-        coverSrc: 'assets/image/covers/01 Front-end course.jpeg',
+        coverSrc: 'assets/image/covers/01-Front-end-course.webp',
     },
     {
         artist: 'SUNOback',
         songName: 'Expulsion',
         audioSrc: 'assets/audio/02 Expulsion.mp3',
-        coverSrc: 'assets/image/covers/02 Expulsion.jpeg',
+        coverSrc: 'assets/image/covers/02-Expulsion.webp',
     },
     {
         artist: 'Three Suno Grace',
         songName: 'Gratitude',
         audioSrc: 'assets/audio/03 Gratitude.mp3',
-        coverSrc: 'assets/image/covers/03 Gratitude.jpeg',
+        coverSrc: 'assets/image/covers/03-Gratitude.webp',
     },
     {
         artist: 'Suno Park',
         songName: 'Сode of conduct',
         audioSrc: 'assets/audio/04 Сode of conduct.mp3',
-        coverSrc: 'assets/image/covers/04 Сode of conduct.jpeg',
+        coverSrc: 'assets/image/covers/04-Сode-of-conduct.webp',
     },
     {
         artist: 'SUNOstein',
         songName: 'Cross-check',
         audioSrc: 'assets/audio/05 Cross-check.mp3',
-        coverSrc: 'assets/image/covers/05 Cross-check.jpeg',
+        coverSrc: 'assets/image/covers/05-Cross-check.webp',
     },
     {
         artist: 'SU/NO',
         songName: 'Mentor',
         audioSrc: 'assets/audio/06 Mentor.mp3',
-        coverSrc: 'assets/image/covers/06 Mentor.jpeg',
+        coverSrc: 'assets/image/covers/06-Mentor.webp',
     },
     {
         artist: 'SUNOllica',
         songName: 'RS Activist',
         audioSrc: 'assets/audio/07 RS Activist.mp3',
-        coverSrc: 'assets/image/covers/07 RS Activist.jpeg',
+        coverSrc: 'assets/image/covers/07-RS-Activist.webp',
     },
 ]
 
@@ -86,20 +86,20 @@ function init() {
     bodyEl = document.body;
     const container = createDOMElement('main', bodyEl, 'container');
     const footer = createDOMElement('footer', bodyEl, 'footer');
-    const currYear = createDOMElement('p', footer, 'currYear');
-    currYear.textContent = `${new Date().getFullYear()}`;
     const link1 = createDOMElement('a', footer, 'link');
     link1.href = 'https://github.com/radomskaia';
     link1.target = '_blank';
     const github = createDOMElement('img', link1, 'icon');
     github.alt = 'icon';
     github.src = 'assets/image/icons/icons8-github-50.png';
+    const currYear = createDOMElement('p', footer, 'currYear');
+    currYear.textContent = `${new Date().getFullYear()}`;
     const link2 = createDOMElement('a', footer, 'link');
     link2.href = 'https://rs.school/courses/javascript-ru';
     link2.target = '_blank';
     const rsSchool = createDOMElement('img', link2, 'icon');
     rsSchool.alt = 'icon';
-    rsSchool.src = 'assets/image/icons/logo-rsschool3.png';
+    rsSchool.src = 'assets/image/icons/rss-logo.png';
     const playerBox = createDOMElement('div', container, 'playerBox');
     const coverBox = createDOMElement('div', playerBox, 'coverBox');
     coverBox.style.height = `${coverBox.clientWidth}px`
@@ -227,9 +227,9 @@ function switchSong() {
 }
 
 function renderSongData() {
-    bodyEl.style.backgroundImage = `linear-gradient(to bottom right, rgba(196, 218, 210, 0.8), rgba(196, 218, 210, 0.8)), url('${album[currentSongIndex].coverSrc}')`;
     audio.src = album[currentSongIndex].audioSrc;
     coverImg.src = album[currentSongIndex].coverSrc;
+    bodyEl.style.backgroundImage = `linear-gradient(to bottom right, rgba(196, 218, 210, 0.8), rgba(196, 218, 210, 0.8)), url('${album[currentSongIndex].coverSrc}')`;
     artistName.textContent = album[currentSongIndex].artist;
     songName.textContent = album[currentSongIndex].songName;
 }
