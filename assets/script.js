@@ -82,7 +82,6 @@ function createDOMElement(tagName, parentElement, ...classList) {
 }
 
 function init() {
-    // build HTML Structure
     bodyEl = document.body;
     const container = createDOMElement('main', bodyEl, 'container');
     const footer = createDOMElement('footer', bodyEl, 'footer');
@@ -143,8 +142,6 @@ function init() {
     progressCurrentTime.textContent = getTimeString(audio.currentTime);
     changeRepeat()
     volumeBtn.src = `assets/image/icons/icons8-volume-${VOLUME.MAX}-64.png`;
-
-    // Event Listeners
 
     repeatBtn.addEventListener('click', () => {
         repeatValue = repeatValue >= REPEAT.SHUFFLE ? REPEAT.ALL : repeatValue + 1;
@@ -313,7 +310,6 @@ function stopRewind(bool = false, type = 'mouse') {
         isMouseMove = false
     }
     progressPopOver.classList.remove('progressPopOver_active');
-    // console.log(audio.currentTime)
     audio.currentTime = rewindTime;
 }
 
@@ -382,14 +378,3 @@ function changeVolume(volumeValue) {
 }
 
 init()
-
-console.log(
-    `
-    Доп. функционал: 
-    - перелистывание/перемотка/воспроизведение с клавиатуры (нажать на стрелки - переключение трека, зажатие стрелки - перемотка, пробел - Play/Pause
-    - адаптация для мобильных устройств (перетягивание ползунка реализовано не только мышкой, но и тачем)
-    - полоса буферизации
-    - поповер при перемотке с временем перемотки
-    - идеально подобранный плейлист и неплохой дизайн. 
-    `
-)
