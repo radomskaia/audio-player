@@ -27,7 +27,7 @@ This project was developed as part of the [JavaScript 30](https://github.com/rol
 ## 🛠️ Tech Stack
 
 - **HTML5**
-- **CSS3** (custom styles, flexbox layout, transitions)
+- **CSS3, SCSS** (custom styles, flexbox layout, transitions)
 - **Vanilla JavaScript**
 
 
